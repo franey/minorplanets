@@ -28,6 +28,12 @@ You get a new life (up to a maximum of 12) every 10,000 points.
 
 2015-09-20: Repo created.
 
+## To do
+
+* Improve browser cross-compatibility (currently only known to be working on Firefox 40.0.2).
+
+* Add proper separating-axis-theorem collision detection.
+
 ## Credits
 
 Sound effects are by Mike Koenig, via soundbible.com.
