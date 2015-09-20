@@ -470,7 +470,8 @@
             gameOverTime -= seconds;
         } else {
             write(48, "minor planets",                 midX, midY - lead*7);
-            write(18, "sound effects by Mike Koening", midX, midY + lead*5);
+            write(18, "© 2015 d.g.h. franey",          midX, midY - lead*4);
+            write(18, "sound effects by mike koening", midX, midY + lead*5);
             write(24, "press enter to start",          midX, midY + lead*7);
 
             write(18, "thrust",     col1X, midY - lead*2);
@@ -480,7 +481,7 @@
             write(18, "spin right", col1X, midY);
             write(18, "→",          col2X, midY);
             write(18, "fire",       col1X, midY + lead);
-            write(18, "<space>",    col2X, midY + lead);
+            write(18, "space",    col2X, midY + lead);
             write(18, "pause",      col1X, midY + lead*2);
             write(18, "p",          col2X, midY + lead*2);
         }
