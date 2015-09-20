@@ -1,0 +1,17 @@
+Credits for sound effects
+========================================================================
+
+The file 'explosion.wav' is a copy of
+'Grenade Explosion-SoundBible.com-2100581469.wav', originally recorded
+by Mike Koenig.
+
+
+Likewise, the file 'torpedo.wav' is a copy of 
+'Laser_Cannon-Mike_Koenig-797224747-1.wav', also originally recorded by
+Mike Koenig.
+
+Both were downloaded from soundbible.com and are used under the Creative
+Commons Attribution 3.0 licence.
+
+Thanks to Mike Koening for making these sound effects available for
+royalty-free use.
