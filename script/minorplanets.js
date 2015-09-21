@@ -4,7 +4,7 @@
     var col1X, col2X, midX, midY, lead;     // Text-positioning stuff
 
     // Game state
-    var keysDown;                    
+    var keysToCapture, keysDown;                    
     var lives, level, score;
     var ship, torpedoes, asteroids, fragments;
     var gameOverTime;
@@ -678,14 +678,34 @@
         lead = 24;  // line-height
 
         // Key capture
+        keysToCapture = {
+            13: "Enter",
+            32: " ",
+            37: "ArrowLeft",
+            38: "ArrowUp",
+            39: "ArrowRight",
+            80: "p"
+        };
         keysDown = {};
 
         addEventListener("keydown", function (e) {
-            keysDown[e.key] = true;
+            var key = e.key || keysToCapture[e.keyCode];
+
+            if (e.keyCode in keysToCapture) {
+                e.preventDefault();
+            }
+
+            if (key) {
+                keysDown[key] = true;
+            }
         }, false);
 
         addEventListener("keyup", function (e) {
-            delete keysDown[e.key];
+            var key = e.key || keysToCapture[e.keyCode];
+
+            if (key) {
+                delete keysDown[key];
+            }
         }, false);
 
         // Initialise our arrays of sprites
