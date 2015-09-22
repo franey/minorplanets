@@ -46,7 +46,7 @@
 
     // Rotate outline by rotation radians about origin
     var rotate = function (outline, rotation, origin) {
-        var origin = origin || {x: 0, y: 0};
+        origin = origin || {x: 0, y: 0};
         return outline.map(function (point) {
             var dx = point.x - origin.x;
             var dy = point.y - origin.y;
@@ -59,7 +59,7 @@
 
     // Move all points by given multiplication factor from origin
     var scale = function (outline, factor, origin) {
-        var origin = origin || {x: 0, y: 0};
+        origin = origin || {x: 0, y: 0};
         return outline.map(function (point) {
             return {
                 x: (point.x - origin.x) * factor + origin.x,
@@ -83,7 +83,7 @@
     ////////////////////////////////////////////////////////////////////////////
 
     var draw = function (outline, context) {
-        var context = context || ctx;
+        context = context || ctx;
 
         context.beginPath();
         context.moveTo(outline[0].x, outline[0].y);
@@ -95,7 +95,7 @@
     };
 
     var write = function (fontSize, text, x, y, context) {
-        var context = context || ctx;
+        context = context || ctx;
 
         context.font = fontSize + "px monospace";
         context.strokeText(text, x, y);
@@ -286,7 +286,6 @@
     // Asteroid
     //--------------------------------------------------------------------------
     var Asteroid = function (size, x, y, angle) {
-        var speed;
         var that = this;
 
         this.anglrSpeed = rand(-Asteroid.maxAbsAnglrSpeed,
@@ -307,7 +306,7 @@
                 outline[i] = {
                     x: that.position.x + distance * cos(angle),
                     y: that.position.y + distance * sin(angle)
-                }
+                };
             }
             return outline;
         })();
@@ -334,7 +333,7 @@
 
         score += Asteroid.sizes[this.size].score;
 
-        asteroids = asteroids.filter(function (el) {return el != that;});
+        asteroids = asteroids.filter(function (el) {return el !== that;});
     };
 
     Asteroid.prototype.explode = function () {
@@ -345,7 +344,7 @@
 
     Asteroid.prototype.update = function (seconds) {
         this.move(seconds);
-    }
+    };
 
     Asteroid.generate = function (qty) {
         // Creates a bunch of large asteroids for a new level
@@ -397,7 +396,7 @@
         this.timeToLive -= seconds;
 
         if (this.timeToLive <= 0) {
-            torpedoes = torpedoes.filter(function (el) {return el != that;});
+            torpedoes = torpedoes.filter(function (el) {return el !== that;});
         } else {
             this.move(seconds);
         }
@@ -427,7 +426,7 @@
         this.timeToLive -= seconds;
 
         if (this.timeToLive <= 0) {
-            fragments = fragments.filter(function (el) {return el != that;});
+            fragments = fragments.filter(function (el) {return el !== that;});
         } else {
             this.move(seconds);
         }
@@ -571,7 +570,7 @@
                 if (torpedoes[i].collidedWith(asteroids[j])) {
                     asteroids[j].destroy();
                     torpedoes = torpedoes.filter(function (el)
-                            {return el != torpedoes[i];});
+                            {return el !== torpedoes[i];});
                     break;
                 }
             }
@@ -637,10 +636,7 @@
     var init = function () {
 
         // Canvas (and context) for main playing area
-        canvas = document.createElement("canvas");
-        canvas.height = 512;
-        canvas.width = 768;
-        document.body.appendChild(canvas);
+        canvas = document.getElementById("main-canvas");
 
         ctx = canvas.getContext("2d");
         ctx.fillStyle = "black";
@@ -653,10 +649,7 @@
         ctx.textAlign = "center";
         ctx.textBaseline = "hanging";
 
-        scoreboard = document.createElement("canvas");
-        scoreboard.height = 48;
-        scoreboard.width = canvas.width;
-        document.body.appendChild(scoreboard);
+        scoreboard = document.getElementById("score-canvas");
 
         // Ditto for scoreboard
         scx = scoreboard.getContext("2d");
@@ -746,7 +739,7 @@
         Ship.anglrDrag = Infinity;          // in radians per second per second
         Ship.drag = 512;                    // in pixels per second per second
         Ship.explosionSound = "audio/explosion.wav";
-        Ship.initialOrientation = -PI/2     // in radians
+        Ship.initialOrientation = -PI/2;     // in radians
         Ship.initialPosition = {
                 x: canvas.width/2,
                 y: canvas.height/2
