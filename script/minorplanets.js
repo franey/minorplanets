@@ -40,6 +40,11 @@
         };
     };
 
+    // Return copy of array with element removed
+    var remove = function (array, element) {
+        array.filter(function (el) {return el != element;});
+    };
+
     ////////////////////////////////////////////////////////////////////////////
     // Outline transformations (outline is array of objects like {x: 0, y: 0})
     ////////////////////////////////////////////////////////////////////////////
@@ -104,6 +109,65 @@
     ////////////////////////////////////////////////////////////////////////////
     // Types
     ////////////////////////////////////////////////////////////////////////////
+
+    //--------------------------------------------------------------------------
+    // SpatialHash
+    //--------------------------------------------------------------------------
+    var SpatialHash = function () {
+        this.cellSize = SpatialHash.cellSize;
+        this.hash = {};
+    };
+
+    SpatialHash.prototype.insert = function (sprite) {
+        var keys = this.keys(sprite);
+        var key;
+
+        for (var i in keys) {
+            key = keys[i];
+            if (this.hash[key] instanceof Array) {
+                this.hash[key].push(sprite);
+            } else {
+                this.hash[key] = [sprite];
+            }
+        }
+    };
+
+    SpatialHash.prototype.remove = function (sprite) {
+        var keys = this.keys(sprite);
+        var key;
+
+        for (var i in keys) {
+            key = keys[i];
+            if (this.hash[key] instanceof Array) {
+                this.hash[key] = remove(this.hash[key], sprite);
+            }
+        }
+    };
+
+    SpatialHash.prototype.key = function (x, y) {
+        var x = Math.floor(mod(x, canvas.width ) / this.cellSize)*this.cellSize;
+        var y = Math.floor(mod(y, canvas.height) / this.cellSize)*this.cellSize;
+        
+        return x.toString() + ":" + y.toString();
+    };
+
+    SpatialHash.prototype.keys = function (sprite) {
+        var minX = sprite.position.x - sprite.radius;
+        var maxX = sprite.position.x + sprite.radius;
+        var minY = sprite.position.y - sprite.radius;
+        var maxY = sprite.position.y + sprite.radius;
+        var keys = [];
+
+        for (var x = minX; x <= maxX; x = min(x + this.cellSize, maxX)) {
+            for (var y = minY; y <= maxY; y = min(y + this.cellSize, maxY)) {
+                key = this.key(x, y);
+                if (keys.indexOf(key) === -1) {
+                    keys.push(key);
+                }
+            }
+        }
+        return keys;
+    };
 
     //--------------------------------------------------------------------------
     // Sprite: common prototype for ship, asteroids, torpedoes, etc.
@@ -766,6 +830,7 @@
         Ship.lifeIcon = rotate(scale(Ship.outline, Ship.radius),
                 Ship.initialOrientation); 
         Ship.timeBetweentorpedoes = 0.2;    // in seconds
+        SpatialHash.cellSize = Ship.radius * 4;
         Torpedo.radius = 1;     // in pixels
         Torpedo.sound = "audio/torpedo.wav";
         Torpedo.speed = 256;    // in pixels per second
