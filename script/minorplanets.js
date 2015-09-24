@@ -1,4 +1,4 @@
-(function minorplanets () {
+var mp = (function minorplanets () {
     var then;                               // Used for animation
     var canvas, ctx, scoreboard, scx;       // Canvases & associated contexts
     var col1X, col2X, midX, midY, lead;     // Text-positioning stuff
@@ -158,9 +158,9 @@
         var maxY = sprite.position.y + sprite.radius;
         var keys = [];
 
-        for (var x = minX; x <= maxX; x = min(x + this.cellSize, maxX)) {
-            for (var y = minY; y <= maxY; y = min(y + this.cellSize, maxY)) {
-                key = this.key(x, y);
+        for (var x = minX; x < maxX + this.cellSize; x += this.cellSize) {
+            for (var y = minY; y < maxY + this.cellSize; y += this.cellSize) {
+                key = this.key(min(x, maxX), min(y, maxY));
                 if (keys.indexOf(key) === -1) {
                     keys.push(key);
                 }
@@ -630,25 +630,63 @@
 
     // See if anything's hit anything else
     var checkCollisions = function () {
-        for (var i = 0; i < torpedoes.length; i++) {
-            for (var j = 0; j < asteroids.length; j++) {
-                if (torpedoes[i].collidedWith(asteroids[j])) {
-                    asteroids[j].destroy();
-                    torpedoes = torpedoes.filter(function (el)
-                            {return el != torpedoes[i];});
-                    break;
+        var spHash, i, j, k, keys, asts;
+
+        // spatially hash asteroids
+        spHash = new SpatialHash();
+
+        for (i in asteroids) {
+            spHash.insert(asteroids[i]);
+        }
+
+        nextTorpedo: for (i in torpedoes) {
+            keys = spHash.keys(torpedoes[i]);
+            for (j in keys) {
+                asts = spHash.hash[keys[j]];
+                for (k in asts) {
+                    if (torpedoes[i].collidedWith(asts[k])) {
+                        asts[k].destroy();
+                        torpedoes = torpedoes.filter(function (el)
+                                {return el != torpedoes[i];});
+                        break nextTorpedo;
+                    }
                 }
             }
         }
 
+
+        //for (var i = 0; i < torpedoes.length; i++) {
+            //for (var j = 0; j < asteroids.length; j++) {
+                //if (torpedoes[i].collidedWith(asteroids[j])) {
+                    //asteroids[j].destroy();
+                    //torpedoes = torpedoes.filter(function (el)
+                            //{return el != torpedoes[i];});
+                    //break;
+                //}
+            //}
+        //}
+
         if (ship) {
-            for (var i = 0; i < asteroids.length; i++) {
-                if (ship.collidedWith(asteroids[i])) {
-                    ship.destroy();
-                    break;
+            keys = spHash.keys(ship);
+            ship: for (i in keys) {
+                asts = spHash.hash[keys[i]];
+                for (j in asts) {
+                    if (ship.collidedWith(asts[j])) {
+                        ship.destroy();
+                        break ship;
+                    }
                 }
             }
         }
+
+        //if (ship) {
+            //for (var i = 0; i < asteroids.length; i++) {
+                //if (ship.collidedWith(asteroids[i])) {
+                    //ship.destroy();
+                    //break;
+                //}
+            //}
+        //}
     };
 
     // Draw everything
@@ -838,9 +876,11 @@
     };
 
     return {
+        SpatialHash: SpatialHash,
         run: function () {
                 init();
                 betweenGames();
         }
     };
-})().run();
+})();
+mp.run();
